@@ -1,0 +1,48 @@
+<form #usermodel = "ngForm">
+  <div class="col-md-4">
+    <h4>Assign Checklist</h4>
+  <ng-container *ngFor="let field of assetChecklistFields; index as i" >
+      <div >
+        <input placeholder="{{field.checklistField}}" [(ngModel)]="field.fieldValue" name="first" required/>
+      </div>  
+      </ng-container>
+  
+  </div>
+  
+  <div class="text" >
+    <mat-form-field>
+      <input matInput [ngxMatDatetimePicker]="picker" [max]="tomorrow" placeholder="Choose a date & time" [(ngModel)]="serviceDoneDate" name="serviceDate">
+      
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  
+      <ngx-mat-datetime-picker #picker></ngx-mat-datetime-picker>
+  </mat-form-field>
+    <br/>
+
+    <!-- <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Choose a date</mat-label>
+      <input matInput [matDatepicker]="picker" [max]="tomorrow" name="service Done Date" [(ngModel)]="serviceDoneDate"  />
+
+
+      <mat-datepicker-toggle matSuffix [for]="picker">
+        <mat-icon matDatepickerToggleIcon></mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker #picker>select</mat-datepicker>
+    </mat-form-field> -->
+  </div>
+  <div class="text">
+  
+    <!-- <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>upcoming checklist date</mat-label>
+      <input matInput [matDatepicker]="picker" name="service Done Date"   />
+      <mat-datepicker-toggle matSuffix [for]="picker">
+        <mat-icon matDatepickerToggleIcon></mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker #picker>select</mat-datepicker>
+    </mat-form-field> -->
+  </div>
+  <div class="form-group">
+    <button type="submit" (click)="Submit()"  class="btn btn-success">SUBMIT</button>
+  
+  </div>
+  </form>

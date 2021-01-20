@@ -1,0 +1,17 @@
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <!-- Position Column -->
+    <ng-container matColumnDef="checkListField">
+        <th mat-header-cell *matHeaderCellDef> Check List Field </th>
+        <td mat-cell *matCellDef="let id"> {{id.checklistField}} </td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="checkListValue">
+        <th mat-header-cell *matHeaderCellDef> Check List Value</th>
+        <td mat-cell *matCellDef="let id"> {{id.checklistValue}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
