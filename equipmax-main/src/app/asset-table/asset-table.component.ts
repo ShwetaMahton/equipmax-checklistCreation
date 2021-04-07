@@ -5,6 +5,7 @@ import { findIndex } from 'rxjs/operators';
 import { WebRequestService } from '../web-request.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogAssetTableComponent } from '../dialog-asset-table/dialog-asset-table.component';
+import { UpdateChecklistComponent } from '../update-checklist/update-checklist.component';
 
 
 export interface PeriodicElement {
@@ -25,7 +26,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./asset-table.component.scss']
 })
 export class AssetTableComponent implements OnInit {
-  displayedColumns: string[] = ['id','poolAssetID', "getdetails","Create","viewdetails"];
+  displayedColumns: string[] = ['id','poolAssetID', "getdetails","Create","viewdetails", "UPDATE"];
   dataSource = ELEMENT_DATA;
   
 
@@ -34,6 +35,17 @@ export class AssetTableComponent implements OnInit {
     console.log("index", index);
     this.webservice.poolAssetID=index;
     const dialogRef = this.dialog.open(DialogAssetTableComponent ,{height:'80%',width:'70%'});
+    //this._router.navigate(['/dialog-table',index]);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+      
+    });
+  }
+  updatedialog(index : number) {
+    console.log("index", index);
+    this.webservice.poolAssetID=index;
+    const dialogRef = this.dialog.open(UpdateChecklistComponent ,{height:'80%',width:'70%'});
     //this._router.navigate(['/dialog-table',index]);
 
     dialogRef.afterClosed().subscribe(result => {

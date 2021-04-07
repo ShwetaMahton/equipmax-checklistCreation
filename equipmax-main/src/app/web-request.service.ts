@@ -3,6 +3,7 @@ import { catchError, tap } from 'rxjs/operators';
 import {  Observable, of, Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
+//import 'rxjs/add/operator/map';
 
 const baseUrl = 'http://localhost:4200/api/createchecklist';
 const baseurl = 'http://localhost:4200/asset-table';
@@ -13,9 +14,11 @@ export class WebRequestService {
 
   constructor(private http: HttpClient) {}
   sendData: any;
-
+  public checklistField:any;
+  public  checklistKey:number;
   public poolAssetID:number;
   public checklistLogPK:number;
+  public checklistPK:number;
   getchecklist() {
       return this.http.get(environment.url+'/checklist')
   }
@@ -23,15 +26,17 @@ export class WebRequestService {
     console.log(this.poolAssetID);
     localStorage.setItem('id', JSON.stringify(this.poolAssetID));
   }
+  getupdatechecklist(){
+    console.log(this.checklistField);
+    localStorage.setItem('id', JSON.stringify(this.checklistField));
+  }
 
   getOne(id) {
     return this.http.get('http://localhost:3000/assetid/'+id)
  }
-
- deleteData(id)  {
-   return this.http.delete(`${baseurl}/${id}`)
- }
-
+ getoneupdate(id) {
+  return this.http.get('http://localhost:3000/checklistupdate/'+id)
+}
  updateData(info)
  {
   return this.http.put('http://localhost:3000/assetid/update/'+info.id,info)
@@ -39,6 +44,30 @@ export class WebRequestService {
 
   getassetid()  {
     return this.http.get(environment.url + '/assetid')
+  }
+  
+  getassetamc()  {
+    //return this.http.get(environment.url + '/getAmcPoList')
+    const url = environment.url + '/getAmcPoList';
+    return this.http.get(url)
+    .pipe(
+      tap((_) => console.log('fetched successfully')),
+      catchError(
+        this.handleError<any>('get amc po', [])
+      )
+    );
+  }
+
+  getAssetcostDepreciatecostChart()  {
+    //return this.http.get(environment.url + '/getAmcCompareList')
+    const url = environment.url + '/getAmcCompareList';
+    return this.http.get(url)
+    .pipe(
+      tap((_) => console.log('fetched successfully')),
+      catchError(
+        this.handleError<any>('get assetCost DepreciateCost Comparison Bar chart', [])
+      )
+    );
   }
 
   getchecklistpool()  {
@@ -62,6 +91,7 @@ handleError<T>(operation = 'operation', result?: T) {
   return this.http.get('http://localhost:3000/equipmax')
   }
 
+
   create(data) {
     return this.http.post('http://localhost:3000/equipmax', data);
   }
@@ -69,22 +99,13 @@ handleError<T>(operation = 'operation', result?: T) {
   fetchAssetDetails(assetId){
     console.log("////id",assetId);
     return this.http.post('http://localhost:3000/getAssetDetails', {assetId});
-    // const headers = new HttpHeaders();
-    // headers.append('Access-Control-Allow-Origin', '*');
-    // headers.append('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT');
-    // headers.append('Accept', 'application/json');
-    // headers.append('content-type', 'application/json');
+   
+  }
 
-    // const url = environment.url + '/getAssetDetails';
-    // console.log('data', data);
-
-    // return this.http.post(url, data, { headers })
-    // .pipe(
-    //   tap((_) => console.log('fetched successfully')),
-    //   catchError(
-    //     this.handleError<any>('fetched getAssetDetails For SelectedAsset', [])
-    //   )
-    // );
+  fetch(assetId){
+    console.log("////id",assetId);
+    return this.http.post('http://localhost:3000/uuuuuuu', {assetId});
+   
   }
 
 
@@ -124,6 +145,43 @@ handleError<T>(operation = 'operation', result?: T) {
       )
     );
   }
+  saveNewNExistingCheckListFieldsForSelectedAsset(data): any {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    headers.append('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT');
+    headers.append('Accept', 'application/json');
+    headers.append('content-type', 'application/json');
+
+    const url = environment.url + '/saveNewNExistingCheckListFieldsForSelectedAsset';
+    console.log('url', url);
+
+    return this.http.post(url, data, { headers })
+    .pipe(
+      tap((_) => console.log('saved successfully')),
+      catchError(
+        this.handleError<any>('save saveNewNExistingCheckListFieldsForSelectedAsset', [])
+      )
+    );
+  }
+
+  updatechecklist(data): any {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    headers.append('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT');
+    headers.append('Accept', 'application/json');
+    headers.append('content-type', 'application/json');
+
+    const url = environment.url + '/updatechecklist';
+    console.log('url', url);
+
+    return this.http.post(url, data, { headers })
+    .pipe(
+      tap((_) => console.log('saved successfully')),
+      catchError(
+        this.handleError<any>('update checklist', [])
+      )
+    );
+  }
 
   fetchExistingCheckListFieldsForSelectedAsset(data): any {
     const headers = new HttpHeaders();
@@ -150,6 +208,13 @@ handleError<T>(operation = 'operation', result?: T) {
    return this.http.post('http://localhost:3000/getlog', {poolAssetID});
 
   }
+  getchecklistid()  {
+    console.log(this.checklistField);
+    var checklistField= this.checklistField;
+   return this.http.post('http://localhost:3000/getupdatechecklist', {checklistField});  
+
+  }
+  
   getchecklistlogData(assetId:number)  {
     console.log("assetId...........",assetId);
    return this.http.post('http://localhost:3000/getChecklistLogDetails', {assetId});
@@ -162,32 +227,11 @@ handleError<T>(operation = 'operation', result?: T) {
    return this.http.post('http://localhost:3000/getAssetlog', {checklistLogPK});
 
   }
-// saveDataDialog(assetID,serviceDoneDate,getUpcomingCheckDate,localTime){
-// console.log("fg........//",assetID,serviceDoneDate,getUpcomingCheckDate,localTime);
-// console.log("poolid",this.poolAssetID);
-// this.http.post('http://localhost:3000/savedata', {serviceDoneDate:serviceDoneDate,localISOTime:getUpcomingCheckDate,localTime:localTime,poolid:assetID})
-//       .subscribe((ResData) => {
-//         console.log(ResData);
-//       });
-// }
-  fetchChecklistLogDetails(data): any {
-    const headers = new HttpHeaders();
-    headers.append('Access-Control-Allow-Origin', '*');
-    headers.append('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT');
-    headers.append('Accept', 'application/json');
-    headers.append('content-type', 'application/json');
-
-    const url = environment.url + '/getChecklistLogDetails';
-    console.log('data', data);
-
-    return this.http.post(url, data, { headers })
-    .pipe(
-      tap((_) => console.log('fetched successfully')),
-      catchError(
-        this.handleError<any>('fetched getAssetDetails For SelectedAsset', [])
-      )
-    );
+  deleteData(assetId:number)  {
+    console.log(assetId);
+    
+    return this.http.delete('http://localhost:3000/checklistpool/delete/'+ {assetId})
   }
-
   
+
 }

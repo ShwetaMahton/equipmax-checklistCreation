@@ -21,7 +21,11 @@ import {
   NgxMatNativeDateModule,
   NgxMatTimepickerModule
 } from '@angular-material-components/datetime-picker';
-@NgModule({
+import { UpdateChecklistComponent } from './update-checklist/update-checklist.component';
+import { AssetsAmcCostComponent } from './assets-amc-cost/assets-amc-cost.component';
+import { ChartsModule } from 'ng2-charts';
+import {NgxPaginationModule} from 'ngx-pagination';
+ @NgModule({
   declarations: [
     AppComponent,
     DialogExampleComponent,
@@ -32,7 +36,9 @@ import {
     AssetTableIndexComponent,
     DialogAssetTableComponent,
     ChecklistLogTableComponent,
-    DialogAssetLogComponent
+    DialogAssetLogComponent,
+    UpdateChecklistComponent,
+    AssetsAmcCostComponent
    
   ],
   entryComponents: [DialogExampleComponent],
@@ -47,7 +53,9 @@ import {
     MatDatepickerModule,
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
-    NgxMatNativeDateModule
+    NgxMatNativeDateModule,
+    ChartsModule,
+    NgxPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent]

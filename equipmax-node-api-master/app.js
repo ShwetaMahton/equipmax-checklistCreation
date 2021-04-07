@@ -109,7 +109,85 @@ app.get("/equipmax", (req,res)=>{
       if(err) throw err;
       res.send(JSON.stringify(result))
     });
-  })
+  }) 
+
+  //amc chart api
+
+  app.get('/assetamcchart', (req,res) =>{
+    let sql = 'select  iteName, iteItemPK from dataitem where iteIsActive=1;';
+  con.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(404).json({
+        failed: 'Not found',
+      });
+    } else {
+      res.status(200).send(result);
+    }
+  });
+});
+
+//get amcPo list
+app.get('/getAmcPoList', function (req, res) {
+  const query =`select  t.item, t.poolItem, t.amccost,  t.itemcost, t.itemID, t.extraCost,t.difference, t.totalAmc, t.AssetID
+  from (
+       select  * from (select iteName as item ,  linkItemKeyFK as poolItem, SUM(linkBaseItemCost) as amccost,  
+         poolCost as itemcost , iteItemPK as itemID, pmExtraCostIncurred as extraCost,(poolCost-SUM(linkBaseItemCost)) as difference, ( SUM(linkBaseItemCost)+ pmExtraCostIncurred) AS totalAmc, poolAssetID as AssetID from datapmscheduledetails
+       inner join linkitemamc on(linkitemamc.linkItemAMCPK=datapmscheduledetails.pmItemAMCFK)
+       inner join linkitemlayer on(linkitemlayer.linkItemKeyPK=linkitemamc.linkItemKeyFK)
+       inner join dataitempool on(dataitempool.poolitemkeypk=linkitemamc.linkItemKeyFK)
+       inner join dataamc on(dataamc.amcPOPK=linkitemamc.linkAMCPOFK)
+       inner join dataitem on(dataitem.iteItemPK=dataitempool.poolItemFK)
+       where poolCost>0
+       GROUP BY poolItem
+       order by difference 
+       
+       
+       )  as amc
+        
+  ) as t 
+  ;`
+  con.query(query, (err, result) => {  
+    if (err) {
+      console.log(err);
+      res.status(401).json({
+        failed: 'Unauthorized Access',
+      });
+    } else {
+      res.end(JSON.stringify(result));
+    }
+  });
+});
+
+//get second amc compare bar chart
+app.get('/getAmcCompareList', function (req, res) {
+  const query =`SELECT     poolAssetID,
+  poolItemKeyPK,
+  poolCost as before_cost,
+  poolProcurementDate,
+  iteDepreciationValue,
+  poolCost - (poolCost*iteDepreciationValue/100) AS after_depreciation_cost,
+  (YEAR(NOW())) - ( YEAR(poolProcurementDate)) AS YearsDepreciated
+ 
+FROM dataitempool
+inner join linkitemlayer on(linkitemlayer.linkItemKeyPK=dataitempool.poolItemKeyPK)
+inner join dataitem on(dataitem.iteItemPK=dataitempool.poolItemFK)
+GROUP BY poolItemKeyPK
+ORDER BY poolProcurementDate DESC
+  ;`
+  con.query(query, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(401).json({
+        failed: 'Unauthorized Access',
+      });
+    } else {
+      res.end(JSON.stringify(result));
+    }
+  });
+});
+
+
   //rest api to get a single employee data
 app.get('/assetid/:id', function (req, res) {
   con.query('SELECT poolItemKeyPK,poolAssetID FROM dataitempool  where poolItemKeyPK=?', [req.params.id], function (err, result) {
@@ -136,6 +214,16 @@ app.delete('/assetid/delete/:id', function (req, res) {
  });
 });
 
+app.delete('/checklistpool/delete/:id', function (req, res) {
+  console.log(req.body);
+  con.query('DELETE FROM `checklistpool` WHERE `checklistPK`=?', [req.body.id], function (err, result) {
+   if (err) throw err;
+   res.send('Record has been deleted!');
+ });
+});
+
+
+
 
   app.get('/asset-table', (req,res) =>{
     
@@ -150,11 +238,10 @@ app.delete('/assetid/delete/:id', function (req, res) {
   })
 
 app.get('/checklist', (req,res) =>{
-  con.query('select * from checklist',function(err,result){
+  con.query('select * from checklist',function(err,result){  
     if(err) throw err;
     res.send(JSON.stringify(result))
   });
-
  app.post("/checklist", (req,res)=> {
    console.log(req.body);
    con.query('select * from checklist', function(err,result){
@@ -162,6 +249,22 @@ app.get('/checklist', (req,res) =>{
    });
  })
 })
+// app.get('/checklistupdate', (req,res) =>{
+//   con.query('select checklistPK, checklistField from checklist  where not exists(select checklistFK from checklistpool where checklist.checklistPK = checklistpool.checklistFK);',function(err,result){  
+//     if(err) throw err;
+//     res.send(JSON.stringify(result))
+//   });
+  
+ 
+//  })
+
+ app.get('/checklistupdate/:id', function (req, res) {
+  con.query('SELECT checklistPK,checklistField FROM checklist  where checklistPK=?', [req.params.id], function (err, result) {
+   if (err) throw err;
+   console.log(result);
+   res.send(JSON.stringify(result));
+ });
+});
 // Get CheckListFields
 app.post('/getCheckListFields', (req, res) => {
   console.log("getCheckListFields");
@@ -180,6 +283,7 @@ app.post('/getCheckListFields', (req, res) => {
     }
     console.log("fetch checklist Field result", result);
     res.status(200).json(result);
+    
   });
 });
 
@@ -276,29 +380,31 @@ where poolItemKeyPk = '${assetId}'
 })
 })
 // Get Detail for selected asset for checklist Creation 
-// app.post('/getAssetDetails', (req, res) => {
-//   let loc = req.body.location;
-//   loc += '%';
-//   const query = `select checklistLogPK, poolItemKeyPk as itemkey, poolassetid as assetid, poolItemPONumber as poNumber, 
-//                         dataitem.iteItemPK as itemTypeKey, dataitem.iteName as itemTypeName, 
-//                         poolfrequency, poolfrequencyRate, IFNULL(checklistoperationDate,'') as LastChecklistCreationDateTime
-//                    from dataitempool
-//                         inner join dataitem on (dataitempool.poolItemFK = dataitem.iteItemPK)
-//                         left outer join checklistlog on (dataitempool.poolItemKeyPk = checklistlog.dataitempoolFK)
-//                    where poolItemKeyPk = ?
-//                          order by checklistLogPK desc LIMIT 1`;
+ app.post('/uuuuuuu', (req, res) => {
+   let loc = req.body.location;
+   loc += '%';
+  const query = `select checklistFK, dataitempoolFK , checklistField
+                   from checklistpool
+                     inner join checklist on (checklistpool.checklistFK = checklist.checklistPK)
+                      left outer join dataitempool on (checklistpool.dataitempoolFK = dataitempool.poolItemKeyPK)
+                  where poolItemKeyPk = '${assetId}'
+                        order by checklistPK `;
 						
-//   con.query(query, [req.body.assetKey], function (err, result) {
-//     if (err) {
-//       console.log("err", err);
-//       res.status(401).json({
-//         failed: 'Unauthorized Access',
-//       });
-//     }
-//     // console.log("fetch checklist Field result", result);
-//     res.status(200).json(result);
-//   });
-// });
+                        con.query(sql1, (err, result) => {
+                          if (err) {
+                            console.log(err);
+                          }
+                          else {
+                            console.log(result);
+                            res.send(
+                              JSON.stringify({
+                                result: "passed",
+                                req_log:result
+                              })
+                            );
+                          }
+                        })
+ });
 
 //save checklist Creation Log and field DataValue 
 app.post('/savechecklistCreationLogNDataValue', (req, res) => {
@@ -362,6 +468,8 @@ app.post("/savedata",(req,res) =>{
 })
 
 
+
+
 app.post("/getlog",(req,res) =>{
    poolAssetID = req.body.poolAssetID;
  console.log("poolid",poolAssetID);
@@ -379,6 +487,25 @@ app.post("/getlog",(req,res) =>{
       })
     );
   }
+})
+})
+app.post("/getupdatechecklist",(req,res) =>{
+  checklistField = req.body.checklistField;
+console.log("poolid",checklistField);
+ sql1 = `select * from checklistpool where checklistFK='${checklistField}'`
+con.query(sql1, (err, result) => {
+ if (err) {
+   console.log(err);
+ }
+ else {
+   console.log(result);
+   res.send(
+     JSON.stringify({
+       result: "passed",
+       req_log: result
+     })
+   );
+ }
 })
 })
 
@@ -406,10 +533,8 @@ con.query(sql1, (err, result) => {
 })
 
 app.post("/getChecklistLogDetails",(req,res) =>{
-  
   assetId = req.body.assetId;
- 
-  console.log(" assetId", assetId);
+ console.log(" assetId", assetId);
   
   sql1 = `Select checklistPoolPK as checklistAssetkey, dataitempoolFK as assetKey, checklistFK as checklistKey, checklistField, poolItemPONumber as poNumber, pickparamdatatype.pickParamDataTypePK as dataTypeId, pickparamdatatype.pickDataTypeName as dataTypeName
   from checklistpool
@@ -436,6 +561,11 @@ app.post("/getChecklistLogDetails",(req,res) =>{
 })
 })
 
+
+  
+      
+
+
 // Get Existing CheckListFields for asset
 app.post('/getExistingCheckListFieldsForSelectedAsset', (req, res) => {
   let loc = req.body.location;
@@ -459,6 +589,42 @@ app.post('/getExistingCheckListFieldsForSelectedAsset', (req, res) => {
     res.status(200).json(result);
   });
 });
+
+// save new and existing checkList for selected Asset
+app.post('/saveNewNExistingCheckListFieldsForSelectedAsset', (req, res) => {
+  console.log("saveCheckListAssetItems");
+  console.log(req.body);
+  let loc = req.body.location;
+  loc += '%';
+ 
+  checkListFields = JSON.parse(req.body.checkListFieldsArrJson);
+  let checklistpoolKey;
+
+    const query = `delete from checklistpool where dataitempoolFK = ?`;
+    con.query(query, [req.body.itemkey], function (err, result) {
+      if (err) {
+        console.log("err", err);
+        res.status(401).json({
+          failed: 'Unauthorized Access',
+        });
+      }
+        console.log("save new or existing checkList asset result", result);
+        res.status(200).json(result);
+       
+    });
+
+    for(let j = 0; j < checkListFields.length; j++) {
+      // console.log(checkListFields[j]);
+      var currentcheckListField = checkListFields[j];
+      saveChkListFields(req.body.itemkey , currentcheckListField, res);
+    }
+});
+function saveChkListFields(itemkey, currentcheckListField, res) {
+  const isActive = 1;
+  const query = `insert into checklistpool(dataitempoolFK, checklistFK, isActive) values(?, ?, ?);`
+  con.query(query, [itemkey, currentcheckListField.checklistPK, isActive], function (err, result) {
+  });
+};
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3000;

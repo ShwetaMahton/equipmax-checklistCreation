@@ -144,8 +144,6 @@ console.log("date1////",date1);
       upcomingCheckDate: this.getUpcomingCheckDate(),
       checklistoperationDate: localISOTime,
       serviceDoneDate: new Date(this.serviceDoneDate).toISOString().slice(0, -1),
-      
-      
       checkListFieldsDataArrJson: JSON.stringify(this.assetChecklistFields)
     };
     console.log("date////",JSON.stringify(this.assetChecklistFields));

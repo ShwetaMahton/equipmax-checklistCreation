@@ -4,4 +4,6 @@ export class home
     checklistDataType:any;
     isActive:any;
     ismandatory: any;
+    checklist:any;
 }
+

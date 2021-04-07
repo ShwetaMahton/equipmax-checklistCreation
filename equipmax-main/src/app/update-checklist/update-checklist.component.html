@@ -1,0 +1,55 @@
+<p>update-checklist works!</p>
+<!-- <button mat-raised-button color="accent" (click)="addmorechecklist()">add more</button> -->
+<!-- <div class="container">
+  <table class="table">
+    <thead>
+      <tr >
+       <th>checklist</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor  ="let field of assetChecklistFields; index as i">
+        
+        <td>{{field.checklistField}}</td>
+       
+        <td ><button mat-raised-button color="warn" (click)="deletechecklist(field.checklistField)" >Delete</button> </td>
+      </tr>
+   </tbody>
+  </table>
+</div> -->
+<!-- <div class="col-md-4">
+    <h4>Assign Checklist</h4>
+  <ng-container *ngFor="let field of assetChecklistFields; index as i" >
+      <div >
+        <input [(ngModel)]="field.fieldValue" name="first" required/>{{field.checklistField}}
+      </div>  
+      </ng-container>
+  </div>
+-->
+      <form #usermodel = "ngForm">
+      <!-- <mat-form-field appearance="fill">
+        <mat-label>Add more</mat-label>
+        <mat-select class = "form-control" [formControl] = "topping" name = "topping" multiple>  
+          <mat-option *ngFor="let tp of toppingList ;let i = index"  [value]="tp.checklistPK" >{{tp.checklistField}}</mat-option>
+        </mat-select>
+      </mat-form-field> -->
+
+      <div class="col-md-4">
+        <h4>Assign Checklist</h4>
+    
+        <ol class="checkbox-items">
+          <li *ngFor="let tpp of toppingList  ;let i = index" >
+            
+            <input type="checkbox" #focus [disabled]='toggleButton' (click)="toggleSelection($event, toppingList[i],index)" [checked]="checkboxes[i]" name="" value="tpp.checklistPK" >{{tpp.checklistField}}
+          </li>
+        </ol>
+        <div>
+          <button (click)="enable()">Edit</button>
+          <!-- <button (click)="delete()">Delete</button> -->
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button type="submit"  class="btn btn-success" (click) = "onsubmit()">SUBMIT</button>
+      </div>
+      </form>
