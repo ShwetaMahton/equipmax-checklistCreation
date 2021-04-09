@@ -132,20 +132,20 @@ app.get('/getAmcPoList', function (req, res) {
   const query =`select  t.item, t.poolItem, t.amccost,  t.itemcost, t.itemID, t.extraCost,t.difference, t.totalAmc, t.AssetID
   from (
        select  * from (select iteName as item ,  linkItemKeyFK as poolItem, SUM(linkBaseItemCost) as amccost,  
-         poolCost as itemcost , iteItemPK as itemID, pmExtraCostIncurred as extraCost,(poolCost-SUM(linkBaseItemCost)) as difference, ( SUM(linkBaseItemCost)+ pmExtraCostIncurred) AS totalAmc, poolAssetID as AssetID from datapmscheduledetails
-       inner join linkitemamc on(linkitemamc.linkItemAMCPK=datapmscheduledetails.pmItemAMCFK)
-       inner join linkitemlayer on(linkitemlayer.linkItemKeyPK=linkitemamc.linkItemKeyFK)
+         poolCost as itemcost , iteItemPK as itemID, pmExtraCostIncurred as extraCost,
+         (poolCost-(SUM(linkBaseItemCost)+sum(pmExtraCostIncurred))) as difference, ( SUM(linkBaseItemCost) + sum(pmExtraCostIncurred)) AS totalAmc,
+         poolAssetID as AssetID from linkitemlayer
+       inner join linkitemamc on(linkitemamc.linkItemAMCPK=linkitemlayer.linkItemKeyPK)
+       inner join datapmscheduledetails on(datapmscheduledetails.pmItemAMCFK=linkitemamc.linkItemKeyFK)
        inner join dataitempool on(dataitempool.poolitemkeypk=linkitemamc.linkItemKeyFK)
-       inner join dataamc on(dataamc.amcPOPK=linkitemamc.linkAMCPOFK)
        inner join dataitem on(dataitem.iteItemPK=dataitempool.poolItemFK)
-       where poolCost>0
+       where poolCost>0 and pmExtraCostIncurred is not null
        GROUP BY poolItem
        order by difference 
        
        
        )  as amc
-        
-  ) as t 
+       ) as t
   ;`
   con.query(query, (err, result) => {  
     if (err) {
@@ -166,14 +166,13 @@ app.get('/getAmcCompareList', function (req, res) {
   poolCost as before_cost,
   poolProcurementDate,
   iteDepreciationValue,
-  poolCost - (poolCost*iteDepreciationValue/100) AS after_depreciation_cost,
-  (YEAR(NOW())) - ( YEAR(poolProcurementDate)) AS YearsDepreciated
- 
+  poolCost * power( (1 - iteDepreciationValue / 100),timestampdiff( YEAR, poolprocurementdate,now() )) AS after_depreciation_cost,
+  timestampdiff( YEAR, poolprocurementdate,now() ) aS YearsDepreciated 
 FROM dataitempool
 inner join linkitemlayer on(linkitemlayer.linkItemKeyPK=dataitempool.poolItemKeyPK)
 inner join dataitem on(dataitem.iteItemPK=dataitempool.poolItemFK)
 GROUP BY poolItemKeyPK
-ORDER BY poolProcurementDate DESC
+ORDER BY  poolcost-after_depreciation_cost desc  
   ;`
   con.query(query, (err, result) => {
     if (err) {

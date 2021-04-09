@@ -6,6 +6,7 @@ import { WebRequestService } from '../web-request.service';
 import * as ChartDataLabels from 'chartjs-plugin-datalabels';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {PageEvent} from '@angular/material/paginator';
+import { endWith } from 'rxjs/operators';
 
 // import {Label } from 'ng2-charts';  
 
@@ -19,6 +20,7 @@ import {PageEvent} from '@angular/material/paginator';
 export class AssetsAmcCostComponent implements OnInit {
 chart:any;
 lineChart: any;
+lineCharts: any;
 poolCost:number;
 items=[];
 Items1=[];
@@ -28,7 +30,7 @@ lengths=0;
   pageSize = 5;  
   finalLabel :any;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-
+  
   // MatPaginator Output
   pageEvent: PageEvent;
   pageEvents: PageEvent;
@@ -60,6 +62,13 @@ lengths=0;
   
  //First Chart
 let htmlRef = this.elementRef.nativeElement.querySelector(`#chartContainer`);
+if(this.lineChart != undefined) {
+  while (this.lineChart.data.datasets.length > 0) {
+    this.lineChart.data.datasets.pop();
+  }
+}
+// this.lineChart.destroy();
+// {}
 //this.assetstatus = data;
 this.lineChart = new Chart(htmlRef, {
   type: 'bar',
@@ -91,6 +100,7 @@ this.lineChart = new Chart(htmlRef, {
       },
     },
     responsive: true,
+    // hover: {mode: null},
     scales: {
       xAxes: [{
         gridLines:{
@@ -104,7 +114,7 @@ this.lineChart = new Chart(htmlRef, {
           drawOnChartArea:false
         },
           ticks: {
-              beginAtZero: true,
+              beginAtZero: false,
                //max value for the chart is 60  
               }
           }
@@ -134,7 +144,14 @@ labelValues.push(value[i].poolAssetID);
 
 
 let htmlRefs = this.elementRef.nativeElement.querySelector(`#chartContainers`);
-this.lineChart = new Chart(htmlRefs, {
+ if(this.lineCharts != undefined) {
+  while (this.lineCharts.data.datasets.length > 0) {
+    this.lineCharts.data.datasets.pop();
+  }
+}
+// this.lineChart.destroy();
+// {}
+this.lineCharts = new Chart(htmlRefs, {
   type: 'bar',
   data: {
     datasets: [
@@ -173,6 +190,7 @@ this.lineChart = new Chart(htmlRefs, {
       },
     },
     responsive: true,
+    // hover: {mode: null},
     scales: {
       xAxes: [{
         gridLines:{
@@ -186,7 +204,7 @@ this.lineChart = new Chart(htmlRefs, {
           drawOnChartArea:false
         },
           ticks: {
-              beginAtZero: true,
+              beginAtZero: false,
                //max value for the chart is 60  
               }
           }
@@ -196,7 +214,7 @@ this.lineChart = new Chart(htmlRefs, {
 });
 }) 
   }
-  
+  //for Strip the long strng from label
 truncateString(labelValue,labelLength){
   console.log("labelValue",labelValue);
 //var  myString = labelValue.toString();
@@ -222,7 +240,7 @@ labelValue= labelValue.toString().substring(0,labelLength) + "...";
    return labelValue;
   }
   
-  //for 1st chart
+  //function for 1st chart
   nextItems(pageSize,pageEvents){
     console.log("pagination");
     console.log("this is pagesize",pageSize);
@@ -240,6 +258,7 @@ labelValue= labelValue.toString().substring(0,labelLength) + "...";
 
     for(let i=itemStartIndex; i<totalItems; i++){
       currentitems.push(this.items[i]);
+      
     }
     
     console.log("currentitems",currentitems);
@@ -261,6 +280,13 @@ labelValue= labelValue.toString().substring(0,labelLength) + "...";
 }
 chart_cost(itemCost,amcCost,labelValue) {
     let htmlRef = this.elementRef.nativeElement.querySelector(`#chartContainer`);
+    if(this.lineChart != undefined) {
+      while (this.lineChart.data.datasets.length > 0) {
+        this.lineChart.data.datasets.pop();
+      }
+    }
+    // this.lineChart.destroy();
+// {}
     //this.assetstatus = data;
     this.lineChart = new Chart(htmlRef, {
       type: 'bar',  
@@ -290,10 +316,12 @@ chart_cost(itemCost,amcCost,labelValue) {
           display: true,
           position: 'bottom',
           labels: {
-            fontColor: '#000080',
+            fontColor: '#000080', 
           },
+          
         },
         responsive: true,
+        // hover: {mode: null},
         scales: {
           xAxes: [{
             gridLines:{
@@ -307,7 +335,7 @@ chart_cost(itemCost,amcCost,labelValue) {
               drawOnChartArea:false
             },
               ticks: {
-                  beginAtZero: true,
+                  beginAtZero: false,
                    //max value for the chart is 60  
                   }
               }
@@ -356,7 +384,14 @@ chart_cost(itemCost,amcCost,labelValue) {
 }
 chart_costs(itemCosts,depreciateCost,labelValues){
   let htmlRefs = this.elementRef.nativeElement.querySelector(`#chartContainers`);
-  this.lineChart = new Chart(htmlRefs, {
+if(this.lineCharts != undefined) {
+  while (this.lineCharts.data.datasets.length > 0) {
+    this.lineCharts.data.datasets.pop();
+  }
+}
+// this.lineChart.destroy();
+//  {}
+  this.lineCharts = new Chart(htmlRefs, {
     type: 'bar',
     data: {
       datasets: [
@@ -395,6 +430,7 @@ chart_costs(itemCosts,depreciateCost,labelValues){
         },
       },
       responsive: true,
+      // hover: {mode: null},
       scales: {
         xAxes: [{
           gridLines:{
@@ -408,7 +444,7 @@ chart_costs(itemCosts,depreciateCost,labelValues){
             drawOnChartArea:false
           },
             ticks: {
-                beginAtZero: true,
+                beginAtZero: false,
                  //max value for the chart is 60  
                 }
             }
