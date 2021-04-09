@@ -28,9 +28,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 var con = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "",
+  password: "rsr22@tcS",
   multipleStatements: true,
-  database: "equipmax3",
+  database: "equipmax",
   // to convert bit to boolean
   typeCast: function castField(field, useDefaultTypeCasting) {
     // To cast bit fields that have a single-bit in them.
@@ -172,8 +172,12 @@ FROM dataitempool
 inner join linkitemlayer on(linkitemlayer.linkItemKeyPK=dataitempool.poolItemKeyPK)
 inner join dataitem on(dataitem.iteItemPK=dataitempool.poolItemFK)
 GROUP BY poolItemKeyPK
+<<<<<<< HEAD
 ORDER BY  poolcost-after_depreciation_cost desc  
   ;`
+=======
+ORDER BY  poolcost-after_depreciation_cost desc  ;`
+>>>>>>> 8dee4fa5936c8675c5822da7cf20a6b5c9b8a778
   con.query(query, (err, result) => {
     if (err) {
       console.log(err);
