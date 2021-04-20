@@ -35,6 +35,8 @@ lengths=0;
   pageEvent: PageEvent;
   pageEvents: PageEvent;
 
+  pageItems = 10;
+
   constructor(private router: Router,private webservice: WebRequestService,private elementRef: ElementRef) {
     
    }
@@ -58,8 +60,6 @@ lengths=0;
     labelValue.push(value[i].AssetID);
    // difference.push(value[i].difference);
   }
-  
-  
  //First Chart
 let htmlRef = this.elementRef.nativeElement.querySelector(`#chartContainer`);
 if(this.lineChart != undefined) {
@@ -78,13 +78,13 @@ this.lineChart = new Chart(htmlRef, {
         //data: [25, 40, 35],
         label: "Assets Cost",
         data: itemCost,
-        backgroundColor: '#FF6384',
+        backgroundColor: '#63FF84',
              fill:false
            },
            {
-             label:"AMC assets Costs",
+             label:"AMC Costs",
             data: amcCost,
-            backgroundColor: '#63FF84',
+            backgroundColor: '#40E0D0',
             fill:false
           },
          
@@ -92,6 +92,15 @@ this.lineChart = new Chart(htmlRef, {
     labels: labelValue,
   },
   options: {
+    title: {
+      fullWidth: true,
+      fontSize:15,
+      padding: 50,
+          display: true,
+          text: 'AmcCost-AssetsCost Comparison Chart',
+          
+      },
+  
     legend: {
       display: true,
       position: 'bottom',
@@ -103,6 +112,9 @@ this.lineChart = new Chart(htmlRef, {
     // hover: {mode: null},
     scales: {
       xAxes: [{
+        ticks: {
+          display: false
+   },
         gridLines:{
           drawBorder:true,
           drawOnChartArea:false
@@ -159,14 +171,14 @@ this.lineCharts = new Chart(htmlRefs, {
         //data: [25, 40, 35],
         label: "Assets Cost",
         data: itemCosts,
-        backgroundColor: '#FF6384',
+        backgroundColor: '#63FF84',
              fill:false
            },
            {
            // data: [88, 80, 15],
-            label:"Depreciate assets Costs",
+            label:"Depreciated Costs",
             data: depreciateCost,
-            backgroundColor: '#63FF84',
+            backgroundColor: '#EE82EE',
             fill:false
           },
           // {
@@ -182,6 +194,14 @@ this.lineCharts = new Chart(htmlRefs, {
     labels: labelValues,
   },
   options: {
+    title: {
+      fullWidth: true,
+      fontSize:15,
+      padding: 50,
+      display: true,
+      text: 'Depreciated-AssetsCost Comparison Chart',
+      
+  },
     legend: {
       display: true,
       position: 'bottom',
@@ -193,6 +213,9 @@ this.lineCharts = new Chart(htmlRefs, {
     // hover: {mode: null},
     scales: {
       xAxes: [{
+        ticks: {
+          display: false
+   },
         gridLines:{
           drawBorder:true,
           drawOnChartArea:false
@@ -296,13 +319,13 @@ chart_cost(itemCost,amcCost,labelValue) {
             //data: [25, 40, 35],
             label: "Assets Cost",
             data: itemCost,
-            backgroundColor: '#FF6384',
+            backgroundColor: '#63FF84',
                  fill:false
                },
                {
-                 label:"AMC assets Costs",
+                 label:"AMC Costs",
                 data: amcCost,
-                backgroundColor: '#63FF84',
+                backgroundColor: '#40E0D0',
                 fill:false
               },
              
@@ -312,6 +335,14 @@ chart_cost(itemCost,amcCost,labelValue) {
         labels: labelValue,
       },
       options: {
+        title: {
+          fullWidth: true,
+          fontSize:15,
+          padding: 50,
+          display: true,
+          text: 'AmcCost-AssetsCost Comparison Chart',
+          
+      },
         legend: {
           display: true,
           position: 'bottom',
@@ -324,6 +355,9 @@ chart_cost(itemCost,amcCost,labelValue) {
         // hover: {mode: null},
         scales: {
           xAxes: [{
+            ticks: {
+              display: false
+       },
             gridLines:{
               drawBorder:true,
               drawOnChartArea:false
@@ -399,14 +433,14 @@ if(this.lineCharts != undefined) {
           //data: [25, 40, 35],
           label: "Assets Cost",
           data: itemCosts,
-          backgroundColor: '#FF6384',
+          backgroundColor: '#63FF84',
                fill:false
              },
              {
              // data: [88, 80, 15],
-              label:"Depreciate assets Costs",
+              label:"Depreciated Costs",
               data: depreciateCost,
-              backgroundColor: '#63FF84',
+              backgroundColor: '#EE82EE',
               fill:false
             },
             // {
@@ -422,6 +456,18 @@ if(this.lineCharts != undefined) {
       labels: labelValues,
     },
     options: {
+      title: {
+        fullWidth: true,
+        fontSize:15,
+        // padding:{top: 1,
+        //   right: 1,
+        //   bottom: 2,
+        //   left: 2},
+        padding: 50,
+       display: true,
+        text: 'Depreciated-AssetsCost Comparison Chart',
+        
+    },
       legend: {
         display: true,
         position: 'bottom',
@@ -433,6 +479,9 @@ if(this.lineCharts != undefined) {
       // hover: {mode: null},
       scales: {
         xAxes: [{
+          ticks: {
+            display: false
+     },
           gridLines:{
             drawBorder:true,
             drawOnChartArea:false

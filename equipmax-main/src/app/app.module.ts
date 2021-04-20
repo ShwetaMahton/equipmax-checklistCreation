@@ -25,6 +25,8 @@ import { UpdateChecklistComponent } from './update-checklist/update-checklist.co
 import { AssetsAmcCostComponent } from './assets-amc-cost/assets-amc-cost.component';
 import { ChartsModule } from 'ng2-charts';
 import {NgxPaginationModule} from 'ngx-pagination';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+
  @NgModule({
   declarations: [
     AppComponent,
@@ -55,7 +57,8 @@ import {NgxPaginationModule} from 'ngx-pagination';
     NgxMatTimepickerModule,
     NgxMatNativeDateModule,
     ChartsModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    ScrollingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

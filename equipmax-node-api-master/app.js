@@ -19,18 +19,23 @@ var corsOptions = {
 const app = express();
 app.use(cors(corsOptions));
 
-// parse requests of content-type - application/json
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({
+  extended: true
+}));
 
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+// // parse requests of content-type - application/json
+// app.use(bodyParser.json());
+
+// // parse requests of content-type - application/x-www-form-urlencoded
+// app.use(bodyParser.urlencoded({ extended: true }));
 
 var con = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "rsr22@tcS",
+  password: "",
   multipleStatements: true,
-  database: "equipmax",
+  database: "equipmax3",
   // to convert bit to boolean
   typeCast: function castField(field, useDefaultTypeCasting) {
     // To cast bit fields that have a single-bit in them.
@@ -89,6 +94,7 @@ http.createServer(function (req, res) {
  // items: rows })
  // })
 // });
+
 
 
 app.post("/equipmax", (req,res)=>{
@@ -172,12 +178,7 @@ FROM dataitempool
 inner join linkitemlayer on(linkitemlayer.linkItemKeyPK=dataitempool.poolItemKeyPK)
 inner join dataitem on(dataitem.iteItemPK=dataitempool.poolItemFK)
 GROUP BY poolItemKeyPK
-<<<<<<< HEAD
-ORDER BY  poolcost-after_depreciation_cost desc  
-  ;`
-=======
 ORDER BY  poolcost-after_depreciation_cost desc  ;`
->>>>>>> 8dee4fa5936c8675c5822da7cf20a6b5c9b8a778
   con.query(query, (err, result) => {
     if (err) {
       console.log(err);
@@ -189,8 +190,6 @@ ORDER BY  poolcost-after_depreciation_cost desc  ;`
     }
   });
 });
-
-
   //rest api to get a single employee data
 app.get('/assetid/:id', function (req, res) {
   con.query('SELECT poolItemKeyPK,poolAssetID FROM dataitempool  where poolItemKeyPK=?', [req.params.id], function (err, result) {
@@ -199,7 +198,6 @@ app.get('/assetid/:id', function (req, res) {
    res.send(JSON.stringify(result));
  });
 });
-
 // api to update record into mysql database
 app.put('/assetid/update/:id', function (req, res) {
   con.query('UPDATE `dataitempool` SET `poolAssetID`=? where `poolItemKeyPK`=?', [req.body.poolAssetID, req.body.id], function (err, result) {
@@ -207,7 +205,6 @@ app.put('/assetid/update/:id', function (req, res) {
    res.send(JSON.stringify(result));
  });
 });
-
 // api to delete record from mysql database
 app.delete('/assetid/delete/:id', function (req, res) {
   console.log(req.body);
@@ -216,7 +213,6 @@ app.delete('/assetid/delete/:id', function (req, res) {
    res.send('Record has been deleted!');
  });
 });
-
 app.delete('/checklistpool/delete/:id', function (req, res) {
   console.log(req.body);
   con.query('DELETE FROM `checklistpool` WHERE `checklistPK`=?', [req.body.id], function (err, result) {
@@ -224,22 +220,16 @@ app.delete('/checklistpool/delete/:id', function (req, res) {
    res.send('Record has been deleted!');
  });
 });
-
-
-
-
   app.get('/asset-table', (req,res) =>{
     
     });
   
-
   app.get('/checklistpool', (req,res) =>{
     con.query('SELECT * from checklistpool',function(err,result){
       if(err) throw err;
       res.send(JSON.stringify(result))
      });
   })
-
 app.get('/checklist', (req,res) =>{
   con.query('select * from checklist',function(err,result){  
     if(err) throw err;
@@ -260,7 +250,6 @@ app.get('/checklist', (req,res) =>{
   
  
 //  })
-
  app.get('/checklistupdate/:id', function (req, res) {
   con.query('SELECT checklistPK,checklistField FROM checklist  where checklistPK=?', [req.params.id], function (err, result) {
    if (err) throw err;
@@ -289,7 +278,6 @@ app.post('/getCheckListFields', (req, res) => {
     
   });
 });
-
 // checklist Createditems
 app.post('/getchecklistCreateditem', (req, res) => {
   let loc = req.body.location;
@@ -316,8 +304,6 @@ from dataitempool
     res.send(200).json(result);
   });
 });
-
-
 // get Checklist Creation Assets
 app.post('/getChecklistCreationAssets', (req, res) => {
   let loc = req.body.location;
@@ -355,7 +341,6 @@ app.post('/getChecklistCreationAssets', (req, res) => {
     res.status(200).json(result);
   });
 });
-
 app.post("/getAssetDetails",(req,res) =>{
   assetId=req.body.assetId;
   console.log("getasset",assetId);
@@ -408,17 +393,14 @@ where poolItemKeyPk = '${assetId}'
                           }
                         })
  });
-
 //save checklist Creation Log and field DataValue 
 app.post('/savechecklistCreationLogNDataValue', (req, res) => {
   console.log("savechecklistCreationLogNDataValue");
   console.log(req.body);
   let loc = req.body.location;
   loc += '%';
-
   let checkListFieldsData = JSON.parse(req.body.checkListFieldsDataArrJson);
   let checklistLogKey;
-
     const query = `Insert into checklistlog(dataitempoolFK, upcomingCheckDate, checklistoperationDate, serviceDoneDate) values(?, ?, ?, ?)`;
     con.query(query, [req.body.itemkey, req.body.upcomingCheckDate, req.body.checklistoperationDate, req.body.serviceDoneDate], function (err, result) {
       if (err) {
@@ -430,21 +412,18 @@ app.post('/savechecklistCreationLogNDataValue', (req, res) => {
         console.log("save checklistCreation Log", result);
         res.status(200).json(result);
         checklistLogKey = result.insertId
-
         for(let j = 0; j < checkListFieldsData.length; j++) {
           var currentcheckListFieldData = checkListFieldsData[j];
           savecheckListCreationDataValue(req.body.itemkey, checklistLogKey, currentcheckListFieldData, res);
         }
     });
 });
-
 function savecheckListCreationDataValue(itemkey, checklistLogKey, currentcheckListField, res) {
   const isActive = 1;
   const query = `Insert into checklistdata(checklistFk, checklistValue, checklistLogFK) values(?, ?, ?);`;
   con.query(query, [currentcheckListField.checklistKey, currentcheckListField.fieldValue, checklistLogKey], function (err, result) {
   });
 };
-
 app.post("/savedata",(req,res) =>{
   serviceDoneDate = req.body.serviceDoneDate;
   localISOTime = req.body.localISOTime;
@@ -469,10 +448,6 @@ app.post("/savedata",(req,res) =>{
   }
 })
 })
-
-
-
-
 app.post("/getlog",(req,res) =>{
    poolAssetID = req.body.poolAssetID;
  console.log("poolid",poolAssetID);
@@ -511,7 +486,6 @@ con.query(sql1, (err, result) => {
  }
 })
 })
-
 app.post("/getAssetlog",(req,res) =>{
   checklistLogPK = req.body.checklistLogPK;
 console.log("poolid",poolAssetID);
@@ -534,7 +508,6 @@ con.query(sql1, (err, result) => {
  }
 })
 })
-
 app.post("/getChecklistLogDetails",(req,res) =>{
   assetId = req.body.assetId;
  console.log(" assetId", assetId);
@@ -547,7 +520,6 @@ app.post("/getChecklistLogDetails",(req,res) =>{
   where checklist.isActive = 1 and checklistpool.isActive = 1 and  dataitempoolFK = '${assetId}'
   order by dataitempoolFK;`
  
-
     con.query(sql1, (err, result) => {
   if (err) {
     console.log(err);
@@ -563,12 +535,8 @@ app.post("/getChecklistLogDetails",(req,res) =>{
   }
 })
 })
-
-
   
       
-
-
 // Get Existing CheckListFields for asset
 app.post('/getExistingCheckListFieldsForSelectedAsset', (req, res) => {
   let loc = req.body.location;
@@ -592,7 +560,6 @@ app.post('/getExistingCheckListFieldsForSelectedAsset', (req, res) => {
     res.status(200).json(result);
   });
 });
-
 // save new and existing checkList for selected Asset
 app.post('/saveNewNExistingCheckListFieldsForSelectedAsset', (req, res) => {
   console.log("saveCheckListAssetItems");
@@ -602,7 +569,6 @@ app.post('/saveNewNExistingCheckListFieldsForSelectedAsset', (req, res) => {
  
   checkListFields = JSON.parse(req.body.checkListFieldsArrJson);
   let checklistpoolKey;
-
     const query = `delete from checklistpool where dataitempoolFK = ?`;
     con.query(query, [req.body.itemkey], function (err, result) {
       if (err) {
@@ -615,7 +581,6 @@ app.post('/saveNewNExistingCheckListFieldsForSelectedAsset', (req, res) => {
         res.status(200).json(result);
        
     });
-
     for(let j = 0; j < checkListFields.length; j++) {
       // console.log(checkListFields[j]);
       var currentcheckListField = checkListFields[j];
@@ -628,11 +593,8 @@ function saveChkListFields(itemkey, currentcheckListField, res) {
   con.query(query, [itemkey, currentcheckListField.checklistPK, isActive], function (err, result) {
   });
 };
-
 // set port, listen for requests
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
-
-
