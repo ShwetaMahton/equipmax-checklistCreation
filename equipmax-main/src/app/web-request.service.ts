@@ -70,6 +70,20 @@ export class WebRequestService {
     );
   }
 
+  //Assets Lifecycle PIe Chart
+
+  getAssetLifeCycle()  {
+    //return this.http.get(environment.url + '/getLifecycleChart')
+    const url = environment.url + '/getLifecycleChart';
+    return this.http.get(url)
+    .pipe(
+      tap((_) => console.log('fetched successfully')),
+      catchError(
+        this.handleError<any>('get Assets Lifecycle Chart', [])
+      )
+    );
+  }
+
   getchecklistpool()  {
     return this.http.get(environment.url + '/checklistpool')
   }

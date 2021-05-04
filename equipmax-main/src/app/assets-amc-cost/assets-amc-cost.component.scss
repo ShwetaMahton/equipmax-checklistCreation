@@ -1,10 +1,23 @@
 .boxed{
     
-    position: absolute;
+    position: static;
     border: solid black;
     height: 600px;
     width: 900px;
     padding: 20px;
     margin: 20px;
+    
 }
+
+.container2{
+    
+    
+    border: solid black;
+    height: 600px;
+    width: 900px;
+    margin: 200px;
+    margin-right: 500px;
+    padding-left: 290px;
+}
+
 

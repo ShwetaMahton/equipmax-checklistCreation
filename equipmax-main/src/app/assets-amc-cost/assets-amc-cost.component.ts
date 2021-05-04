@@ -7,6 +7,7 @@ import * as ChartDataLabels from 'chartjs-plugin-datalabels';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {PageEvent} from '@angular/material/paginator';
 import { endWith } from 'rxjs/operators';
+import { applySourceSpanToExpressionIfNeeded } from '@angular/compiler/src/output/output_ast';
 
 // import {Label } from 'ng2-charts';  
 
@@ -21,6 +22,7 @@ export class AssetsAmcCostComponent implements OnInit {
 chart:any;
 lineChart: any;
 lineCharts: any;
+pieChart: any;
 poolCost:number;
 items=[];
 Items1=[];
@@ -236,6 +238,118 @@ this.lineCharts = new Chart(htmlRefs, {
   },
 });
 }) 
+
+///Third PIE Chart *****************
+
+this.webservice.getAssetLifeCycle().subscribe(value =>{ 
+  this.length=value.length;
+  console.log("data",value);
+
+    
+    let Expired_Life = []
+    let Life_in_range = []
+    let  Life_not_Reached = []
+  //  let difference = []
+
+
+  
+  Expired_Life.push(value[0].Expired_Life);
+  Life_in_range.push(value[0]. Life_within_Range);
+  Life_not_Reached.push(value[0].Life_not_Reached);
+// difference.push(value[i].difference);
+console.log("Life_in_range",Life_in_range);
+console.log("Expired_Life",Expired_Life);
+
+
+let htmlRefs = this.elementRef.nativeElement.querySelector(`#chartPie`);
+
+this.pieChart = new Chart(htmlRefs, {
+  type: 'pie',
+  data: {
+    datasets: [
+      {
+        //data: [25, 40, 35],
+        label: "Lifespan Expired",
+        data: [Expired_Life,Life_in_range, Life_not_Reached],
+        backgroundColor: ['rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)'],
+             fill:false
+           },
+          //  {
+          //  // data: [88, 80, 15],
+          //   label:"Lifespan Within Range",
+          //   data: [55,22,77],
+          //   backgroundColor: '#EE82EE',
+          //   fill:false
+          // },
+          // {
+          //   //data: [25, 40, 35],
+          //   label: "Lifespan not Reached",
+          //   data: [88,50,60],
+          //   backgroundColor: '#63hbjb',
+          //        fill:false
+          //      },
+          // {
+          //   data: difference,
+          //   backgroundColor: '#6970d5',
+          //   fill:false
+          // },
+       // backgroundColor: ['#FF6384', '#63FF84'],
+      //},
+    ],
+
+    // These labels appear in the legend and in the tooltips when hovering different arcs
+    labels: ["Lifespan Expired", "Lifespan Within Range", "Lifespan not Reached" ],
+  },
+  options: {
+    title: {
+      fullWidth: true,
+      fontSize:15,
+      padding: 50,
+      display: true,
+      text: 'LifeCycle Of Assets',
+      
+  },
+    legend: {
+      display: true,
+      position: 'bottom',
+      labels: {
+        fontColor: '#000080',
+      },
+    },
+    responsive: true,
+    // hover: {mode: null},
+    scales: {
+      xAxes: [{
+        ticks: {
+          display: false
+   },
+        gridLines:{
+          display: false,
+          drawBorder:true,
+          drawOnChartArea:false
+        },
+      }],
+      yAxes: [{
+        gridLines:{
+          display: false,
+          drawBorder:true,
+          drawOnChartArea:false
+        },
+          ticks: {
+            display: false,
+              beginAtZero: false,
+               //max value for the chart is 60  
+              }
+          }
+      ]},
+    maintainAspectRatio: false,
+  },
+});
+
+})
+
   }
   //for Strip the long strng from label
 truncateString(labelValue,labelLength){

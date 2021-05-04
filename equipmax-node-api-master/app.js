@@ -190,6 +190,29 @@ ORDER BY  poolcost-after_depreciation_cost desc  ;`
     }
   });
 });
+
+//LifeCycle PIE CHART
+app.get('/getLifecycleChart', function (req, res) {
+  const query =`SELECT  
+  COUNT(CASE WHEN lifespanStart > timestampdiff( YEAR, poolprocurementdate,now() ) THEN 1 END) as Life_not_Reached,
+  COUNT(CASE WHEN lifespanEnd < timestampdiff( YEAR, poolprocurementdate,now() ) THEN 1 END) as Expired_Life,
+   COUNT(CASE WHEN ( ( lifespanEnd <= timestampdiff( YEAR, poolprocurementdate,now() ) ) && 
+                    (timestampdiff( YEAR, poolprocurementdate,now() ) <= lifespanStart))THEN 1 END) as Life_within_Range
+ FROM dataitempool
+ inner join dataitem on(dataitem.iteItemPK=dataitempool.poolItemFK)
+ ;`
+  con.query(query, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(401).json({
+        failed: 'Unauthorized Access',
+      });
+    } else {
+      res.end(JSON.stringify(result));
+    }
+  });
+});
+
   //rest api to get a single employee data
 app.get('/assetid/:id', function (req, res) {
   con.query('SELECT poolItemKeyPK,poolAssetID FROM dataitempool  where poolItemKeyPK=?', [req.params.id], function (err, result) {
