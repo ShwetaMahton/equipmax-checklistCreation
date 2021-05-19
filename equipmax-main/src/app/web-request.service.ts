@@ -22,10 +22,16 @@ export class WebRequestService {
   getchecklist() {
       return this.http.get(environment.url+'/checklist')
   }
+
+  getchecklistedit() {
+    return this.http.get(environment.url+'/getforeditupdate')
+}
   getDialogId(){
     console.log(this.poolAssetID);
     localStorage.setItem('id', JSON.stringify(this.poolAssetID));
   }
+
+
   getupdatechecklist(){
     console.log(this.checklistField);
     localStorage.setItem('id', JSON.stringify(this.checklistField));
@@ -177,6 +183,29 @@ handleError<T>(operation = 'operation', result?: T) {
       )
     );
   }
+  updateData1(info)
+ {
+  return this.http.put('http://localhost:3000/assetid/update/'+info.id,info)
+ }
+
+  saveNewNExistingCheckListFieldsForSelectedAsset1(data): any {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    headers.append('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT');
+    headers.append('Accept', 'application/json');
+    headers.append('content-type', 'application/json');
+
+    const url = environment.url + '/saveNewNExistingCheckListFieldsForSelectedAsset1/:itemkey' + data.assetid;
+    console.log('url', url);
+
+    return this.http.post(url, data, { headers })
+    .pipe(
+      tap((_) => console.log('saved successfully')),
+      catchError(
+        this.handleError<any>('save saveNewNExistingCheckListFieldsForSelectedAsset', [])
+      )
+    );
+  }
 
   updatechecklist(data): any {
     const headers = new HttpHeaders();
@@ -232,6 +261,17 @@ handleError<T>(operation = 'operation', result?: T) {
   getchecklistlogData(assetId:number)  {
     console.log("assetId...........",assetId);
    return this.http.post('http://localhost:3000/getChecklistLogDetails', {assetId});
+
+  }
+
+  getchecklistForEdit(assetId:number)  {
+    console.log("assetId...........",assetId);
+   return this.http.post('http://localhost:3000/getforeditupdate', {assetId});
+
+  }
+  getpoolfrequency(assetId:number)  {
+    console.log("assetId...........",assetId);
+   return this.http.post('http://localhost:3000/getpoolfrequency', {assetId});
 
   }
 

@@ -26,6 +26,7 @@ import { AssetsAmcCostComponent } from './assets-amc-cost/assets-amc-cost.compon
 import { ChartsModule } from 'ng2-charts';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { EditChecklistComponent } from './edit-checklist/edit-checklist.component';
 
  @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     ChecklistLogTableComponent,
     DialogAssetLogComponent,
     UpdateChecklistComponent,
-    AssetsAmcCostComponent
+    AssetsAmcCostComponent,
+    EditChecklistComponent
    
   ],
   entryComponents: [DialogExampleComponent],
