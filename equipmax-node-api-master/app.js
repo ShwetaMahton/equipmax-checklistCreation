@@ -33,9 +33,9 @@ app.use(express.urlencoded({
 var con = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "",
+  password: "rsr22@tcS",
   multipleStatements: true,
-  database: "equipmax3",
+  database: "equipmax",
   // to convert bit to boolean
   typeCast: function castField(field, useDefaultTypeCasting) {
     // To cast bit fields that have a single-bit in them.
