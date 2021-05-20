@@ -15,6 +15,7 @@ import { AssetTableIndexComponent } from './asset-table-index/asset-table-index.
 import { DialogAssetTableComponent } from './dialog-asset-table/dialog-asset-table.component';
 import { ChecklistLogTableComponent } from './checklist-log-table/checklist-log-table.component';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatCheckboxModule} from '@angular/material/checkbox'
 import { DialogAssetLogComponent } from './dialog-asset-log/dialog-asset-log.component';
 import {
   NgxMatDatetimePickerModule,
@@ -60,7 +61,8 @@ import { EditChecklistComponent } from './edit-checklist/edit-checklist.componen
     NgxMatNativeDateModule,
     ChartsModule,
     NgxPaginationModule,
-    ScrollingModule
+    ScrollingModule,
+    MatCheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]

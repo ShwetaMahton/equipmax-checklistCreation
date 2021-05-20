@@ -151,13 +151,15 @@ app.get("/equipmax", (req,res)=>{
 app.post("/getforeditupdate",(req,res) =>{
   assetId = req.body.assetId;
  console.log(" assetId", assetId);
-  
-  sql1 = `Select checklistPoolPK as checklistAssetkey, dataitempoolFK as assetKey, checklistFK as checklistKey, checklistField, poolfrequency,poolfrequencyRate
-  from checklistpool
-       inner join checklist on(checklistpool.checklistFK = checklist.checklistPK)
-       inner join dataitempool on(checklistpool.dataitempoolFK = dataitempool.poolItemKeyPK)
-  where checklist.isActive = 1 and checklistpool.isActive = 1 and  dataitempoolFK = '${assetId}'
-  order by dataitempoolFK;`
+ 
+ sql1=`select checklistpk,checklistField,if(dataitempoolfk is not null,1,0) as selectedValue,0 as doesChange  from checklistpool
+ right join checklist on(checklistfk=checklistpk and dataitempoolfk=${assetId})`;
+  // sql1 = `Select checklistPoolPK as checklistAssetkey, dataitempoolFK as assetKey, checklistFK as checklistKey, checklistField, poolfrequency,poolfrequencyRate
+  // from checklistpool
+  //      inner join checklist on(checklistpool.checklistFK = checklist.checklistPK)
+  //      inner join dataitempool on(checklistpool.dataitempoolFK = dataitempool.poolItemKeyPK)
+  // where checklist.isActive = 1 and checklistpool.isActive = 1 and  dataitempoolFK = '${assetId}'
+  // order by dataitempoolFK;`
  
     con.query(sql1, (err, result) => {
   if (err) {
