@@ -1,0 +1,62 @@
+<p>edit-checklist works!</p>
+
+<form #userForm = "ngForm" (ngSubmit)="onSubmit(userForm)">
+
+
+    <h1>Enter the new poolfrequency</h1>
+    <ng-container *ngFor="let tpp of poolfrequency; index as i" >
+      <div >
+        <input  placeholder="{{tpp.poolfrequency/24}}"  [(ngModel)]="tpp.fieldValue" name="first" required/>
+      </div>  
+      </ng-container>
+
+
+      <div class="form-group" >
+        <label></label>
+        <h1>poolfrequency for checklists</h1>
+        <select class="form-control"  *ngFor="let tpp of poolfrequency"   ng-selected= "selectedValue" [(ngModel)]="selectedValue" name="poolfrequency" required>
+        
+          <!-- <option  selected value = "Choose"disabled>choose duration for maintenance</option> -->
+          <option selected  *ngIf="tpp.poolfrequency/24 == '1'"  value="Daily">Daily</option>
+          <option selected *ngIf="tpp.poolfrequency/24 == '7'"  value="Weekly">Weekly</option>
+          <option selected *ngIf="tpp.poolfrequency/24 == '30'" value="Monthly">Monthly</option>
+          <option selected *ngIf="tpp.poolfrequency/24!=1 && tpp.poolfrequency/24!= 7 && tpp.poolfrequency/24!=30"  value="others">Others- Please Specify Below</option>
+        </select>
+      </div>
+      <div  *ngIf="selectedValue == 'Daily'">
+        <label for="daily">Daily</label>
+        <input type="number" class="form-control" id="daily" name="daily" value = "1" readonly required>
+      </div>
+      <div *ngIf="selectedValue == 'Weekly'">
+        <label for="weekly">Weekly</label>
+        <input type="number" class="form-control" id="weekly" name="weekly" value="7" readonly required>
+      </div>
+      <div  *ngIf="selectedValue == 'Monthly'">
+        <label for="monthly">Monthly</label>
+        <input type="number" class="form-control" id="monthly" name="monthly" value="30" readonly  required>
+      </div>
+      <div  *ngIf="selectedValue == 'others'">
+        <label for="name">No. of days</label>
+        <input type="number" class="form-control" id="name"  name="other_poolfrequency" *ngFor="let tpp of poolfrequency" [value]="tpp.poolfrequency/24" required>
+      </div>
+      
+      <div class="form-group">
+      <h1>No of times to be performed</h1>
+        <div>              
+      <input type="number" *ngFor="let tpp of poolfrequency"  [(ngModel)]="tpp.fieldValue1" name="first1" min="1" step="1"
+      placeholder = "{{tpp.poolfrequencyRate}}" >
+      </div>
+      </div>
+
+      <ol class="checkbox-items" >
+        <li *ngFor="let tpp of checkboxes ;let i = index "  
+        value = "tpp.checklistKey" 
+       (click)="toggleSelection($event, checkboxes[i],index)" >{{tpp.checklistField}}
+    </li>
+      </ol>
+
+    <button  type="submit" class="btn btn-primary">  Update  </button>
+      </form>
+      
+      
+      

@@ -119,24 +119,6 @@ public toggleButton: boolean = true;
   });
 }
 
-// addmorechecklist() {
-//   this.webservice.getchecklist().subscribe(data =>{
-//     console.log(data)
-//     this.toppingList = JSON.parse(JSON.stringify(data))
-//     })
-
-//     this.route.queryParams.subscribe( params => {
-//       console.log(params);
-
-//     });
-//}
-// deletechecklist(i)
-// {
-//   console.log(i);
-//   this.webservice.deleteData(i).subscribe(data=>{
-//     console.log('assetChecklistFields0505', this.assetChecklistFields);
-//   })
-// }
 
 enable() {
   this.toggleButton = false
@@ -146,34 +128,6 @@ enable() {
   }, 0);
   
 }
-
-// delete() {
-//   var atleastOneSelected = this.checkboxes.some(checkbox => checkbox === true);
-//   var allSelected = this.checkboxes.every(checkbox => checkbox === true);
-//   if (!atleastOneSelected) {
-//     alert("No rows selected.")
-//     return;
-//   }
-//  if (allSelected) {
-//     alert("At least one row should be present.")
-//     return;
-//   }
-
-//   for (let i = this.checkboxes.length-1; i >= 0; i--) {
-//     // If selected, then delete that row.
-//     if (this.checkboxes[i]) {
-//       this.toppingList.splice(i, 1);
-//      this.webservice.deleteData(this.assetId).subscribe(result => {  
-//        alert(result);  
-//        this.LoadData();  
-//     })
-//     }
-// }
-
-//   // Remove entries from checkboxes array.
-//   this.checkboxes = this.checkboxes.filter(checkbox => checkbox === false);
-// }
-
 
 onsubmit() {
   //console.log("saved" , usermodel);

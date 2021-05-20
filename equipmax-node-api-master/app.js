@@ -133,6 +133,74 @@ app.get("/equipmax", (req,res)=>{
   });
 });
 
+// app.get('/getforeditupdate', (req,res) =>{
+//   let sql = 'SELECT checklistPK, checklistField as assetsChecklist , checklistDataTypeFK FROM `checklist` ;';
+// con.query(sql, (err, result) => {
+//   if (err) {
+//     console.log(err);
+//     res.status(404).json({
+//       failed: 'Not found',
+//     });
+//   } else {
+//     res.status(200).send(result);
+//   }
+// });
+// });
+
+
+app.post("/getforeditupdate",(req,res) =>{
+  assetId = req.body.assetId;
+ console.log(" assetId", assetId);
+  
+  sql1 = `Select checklistPoolPK as checklistAssetkey, dataitempoolFK as assetKey, checklistFK as checklistKey, checklistField, poolfrequency,poolfrequencyRate
+  from checklistpool
+       inner join checklist on(checklistpool.checklistFK = checklist.checklistPK)
+       inner join dataitempool on(checklistpool.dataitempoolFK = dataitempool.poolItemKeyPK)
+  where checklist.isActive = 1 and checklistpool.isActive = 1 and  dataitempoolFK = '${assetId}'
+  order by dataitempoolFK;`
+ 
+    con.query(sql1, (err, result) => {
+  if (err) {
+    console.log(err);
+  }
+  else {
+    console.log(result);
+    res.send(
+      JSON.stringify({
+        result: "passed",
+        req_log: result
+      })
+    );
+  }
+})
+})
+
+
+app.post("/getpoolfrequency",(req,res) =>{
+  assetId = req.body.assetId;
+ console.log(" assetId", assetId);
+  
+  sql1 = `Select poolfrequency,poolfrequencyRate
+  from dataitempool
+      
+  where  poolItemKeyPK = '${assetId}'
+  order by poolItemKeyPK;`
+ 
+    con.query(sql1, (err, result) => {
+  if (err) {
+    console.log(err);
+  }
+  else {
+    console.log(result);
+    res.send(
+      JSON.stringify({
+        result: "passed",
+        req_log: result
+      })
+    );
+  }
+})
+})
 //get amcPo list
 app.get('/getAmcPoList', function (req, res) {
   const query =`select  t.item, t.poolItem, t.amccost,  t.itemcost, t.itemID, t.extraCost,t.difference, t.totalAmc, t.AssetID
@@ -616,6 +684,35 @@ function saveChkListFields(itemkey, currentcheckListField, res) {
   con.query(query, [itemkey, currentcheckListField.checklistPK, isActive], function (err, result) {
   });
 };
+
+// save new and existing checkList for selected Asset
+app.post('/saveNewNExistingCheckListFieldsForSelectedAsset1/:itemkey', (req, res) => {
+  console.log("save");
+  console.log(req.body);
+ 
+    const query = `UPDATE dataitempool SET poolfrequency =? ,   poolfrequencyRate =? where poolItemKeyPK=?`;
+    con.query(query,[req.body.updatedpool,req.body.updatedpoolRate, req.body.itemkey], function (err, result) {
+      if (err) {
+        console.log("err", err);
+        res.status(401).json({
+          failed: 'Unauthorized Access',
+        });
+      }
+        console.log("save new or existing checkList asset result", result);
+        res.status(200).json(result);
+        // for(let j = 0; j < checkListFieldsData.length; j++) {
+        //   var currentcheckListFieldData = checkListFieldsData[j];
+        //   savecheckListCreationDataValue1(req.body.itemkey, currentcheckListFieldData, res);
+        // }
+       
+    });
+   
+});
+// function savecheckListCreationDataValue1(itemkey, currentcheckListField, res) {
+//   const query = `UPDATE dataitempool SET poolfrequency =?`;
+//   con.query(query, [currentcheckListField.fieldValue], function (err, result) {
+//   });
+// };
 // set port, listen for requests
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
