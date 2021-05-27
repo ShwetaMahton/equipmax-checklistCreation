@@ -151,13 +151,16 @@ app.get("/equipmax", (req,res)=>{
 app.post("/getforeditupdate",(req,res) =>{
   assetId = req.body.assetId;
  console.log(" assetId", assetId);
+
+ sql1=`select checklistpk,checklistField,if(dataitempoolfk is not null,1,0) as selectedValue,0 as doesChange  from checklistpool
+ right join checklist on(checklistfk=checklistpk and dataitempoolfk=${assetId})`;
   
-  sql1 = `Select checklistPoolPK as checklistAssetkey, dataitempoolFK as assetKey, checklistFK as checklistKey, checklistField, poolfrequency,poolfrequencyRate
-  from checklistpool
-       inner join checklist on(checklistpool.checklistFK = checklist.checklistPK)
-       inner join dataitempool on(checklistpool.dataitempoolFK = dataitempool.poolItemKeyPK)
-  where checklist.isActive = 1 and checklistpool.isActive = 1 and  dataitempoolFK = '${assetId}'
-  order by dataitempoolFK;`
+  // sql1 = `Select checklistPoolPK as checklistAssetkey, dataitempoolFK as assetKey, checklistFK as checklistKey, checklistField, poolfrequency,poolfrequencyRate
+  // from checklistpool
+  //      inner join checklist on(checklistpool.checklistFK = checklist.checklistPK)
+  //      inner join dataitempool on(checklistpool.dataitempoolFK = dataitempool.poolItemKeyPK)
+  // where checklist.isActive = 1 and checklistpool.isActive = 1 and  dataitempoolFK = '${assetId}'
+  // order by dataitempoolFK;`
  
     con.query(sql1, (err, result) => {
   if (err) {
@@ -685,34 +688,68 @@ function saveChkListFields(itemkey, currentcheckListField, res) {
   });
 };
 
-// save new and existing checkList for selected Asset
+// newsave new and existing checkList for selected Asset1
 app.post('/saveNewNExistingCheckListFieldsForSelectedAsset1/:itemkey', (req, res) => {
-  console.log("save");
+  console.log("saveCheckListAssetItems");
   console.log(req.body);
+  let loc = req.body.location;
+  loc += '%'; 
  
-    const query = `UPDATE dataitempool SET poolfrequency =? ,   poolfrequencyRate =? where poolItemKeyPK=?`;
-    con.query(query,[req.body.updatedpool,req.body.updatedpoolRate, req.body.itemkey], function (err, result) {
+  checkListFields = req.body.checkListFieldsArrJson;
+  let checklistpoolKey;
+  
+    const query = `delete from checklistpool where dataitempoolFK = ?`;
+    con.query(query, [req.body.itemkey], function (err, result) {
+      if (err) {
+        console.log("err", err);
+        res.status(401).json({ 
+          failed: 'Unauthorized Access',   
+        });
+      }
+        console.log("save new or existing checkList asset result", result);
+        const sql1 = `UPDATE dataitempool SET poolfrequency =? ,   poolfrequencyRate =? where poolItemKeyPK=?`;
+    con.query(sql1,[req.body.updatedpool,req.body.updatedpoolRate, req.body.itemkey], function (err, result) {
       if (err) {
         console.log("err", err);
         res.status(401).json({
           failed: 'Unauthorized Access',
-        });
+        });  
       }
         console.log("save new or existing checkList asset result", result);
-        res.status(200).json(result);
-        // for(let j = 0; j < checkListFieldsData.length; j++) {
-        //   var currentcheckListFieldData = checkListFieldsData[j];
-        //   savecheckListCreationDataValue1(req.body.itemkey, currentcheckListFieldData, res);
-        // }
+        let insertedChecklistValue = []
+    for(let j = 0; j < checkListFields.length; j++) {
+      console.log(checkListFields[j]);    
+      var currentcheckListField = checkListFields[j]; 
+      console.log(currentcheckListField); 
+      console.log(currentcheckListField.selectedValue);
+     
+        insertedChecklistValue.push([req.body.itemkey , currentcheckListField, 1]); 
+      
+    }
+   
+     saveChkListFields12(insertedChecklistValue,res)       
        
     });
-   
+       
+    });
+  
+  
 });
-// function savecheckListCreationDataValue1(itemkey, currentcheckListField, res) {
-//   const query = `UPDATE dataitempool SET poolfrequency =?`;
-//   con.query(query, [currentcheckListField.fieldValue], function (err, result) {
-//   });
-// };
+  
+function saveChkListFields12(items,res) {
+  const isActive = 1;
+  console.log("items",items);
+  const sql1 = `insert into checklistpool (dataitempoolFK, checklistFK, isActive) values ?`;
+  con.query(sql1, [items], function (err, result) {
+    if(err){
+      throw err;
+    }
+    res.status(200).json(result)
+    
+  });
+};
+  
+
 // set port, listen for requests
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

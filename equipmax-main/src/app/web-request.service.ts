@@ -195,7 +195,7 @@ handleError<T>(operation = 'operation', result?: T) {
     headers.append('Accept', 'application/json');
     headers.append('content-type', 'application/json');
 
-    const url = environment.url + '/saveNewNExistingCheckListFieldsForSelectedAsset1/:itemkey' + data.assetid;
+    const url = environment.url + '/saveNewNExistingCheckListFieldsForSelectedAsset1/' + data.itemkey;
     console.log('url', url);
 
     return this.http.post(url, data, { headers })
