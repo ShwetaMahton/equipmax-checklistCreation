@@ -45,16 +45,16 @@
   <div class="form-group">
     <h1>No of times to be performed</h1>
     <div>
-      <input type="number" *ngFor="let tpp of poolfrequency" [(ngModel)]="tpp.fieldValue1" name="first1" min="1"
-        step="1" placeholder="{{tpp.poolfrequencyRate}}">
+      <input type="number" *ngFor="let tpp of poolfrequency" [(ngModel)]="fieldValue1" name="first1" min="1"
+        step="1"  ng-selected="fieldValue1" (keyup)="onKey($event)">
     </div>
   </div>
 
   <div *ngFor="let tpp of checkboxes ;let i = index " >
   <mat-checkbox  [checked]="tpp.selectedValue===1"  
-    (click)="toggleSelection($event, checkboxes[i],index)">{{tpp.checklistField}}
+    (click)="toggleSelection($event, checkboxes[i],index)" (keyup)="onKey($event)">{{tpp.checklistField}}
   </mat-checkbox>
 </div>
   <br>
-  <button [disabled]= "userForm.form.invalid" mat-dialog-close type ="submit"  class="btn btn-primary"> Update </button>
+  <button [disabled]= "click" mat-dialog-close type ="submit"  class="btn btn-primary"> Update </button>
 </form>

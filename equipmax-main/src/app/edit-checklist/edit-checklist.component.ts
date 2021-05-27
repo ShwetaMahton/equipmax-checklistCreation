@@ -26,6 +26,7 @@ export class EditChecklistComponent implements OnInit {
   fieldValue1: any[] = [];
   selectedValuefinal: any[] = [];
   checkboxes2: any;
+  click : boolean = false;
   
   constructor(private route: ActivatedRoute, private webservice: WebRequestService) { }
 
@@ -33,6 +34,7 @@ export class EditChecklistComponent implements OnInit {
     
    var hasError: boolean = false;
    var hasError1: boolean = false;
+   this.click = !this.click;
       var msg = '';
   
     // for(let i=0;  this.checkboxes[i]["selectedValue"] ==1 ; i++){
@@ -145,6 +147,10 @@ this.checkboxes1=[]
         this.other_poolfrequency = listOption;
       }
       this.selectedValue=listOption;
+
+      const poolFreqRate=this.poolfrequency[0].poolfrequencyRate;
+      this.fieldValue1 = poolFreqRate;
+      console.log('this.fieldValue1', this.fieldValue1);
       console.log('poolfrequency', this.poolfrequency);
       console.log('other_poolfrequency', this.other_poolfrequency);
     });
@@ -158,7 +164,10 @@ this.checkboxes1=[]
     return false;
   }
 
-  
+  onKey(event: KeyboardEvent) { 
+    // if value is not empty the set click to false otherwise true
+    this.click = (event.target as HTMLInputElement).value === '' ? true:false;
+  }
  
   
 
