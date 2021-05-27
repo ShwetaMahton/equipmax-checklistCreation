@@ -51,25 +51,25 @@ this.checkboxes1=[]
      console.log("newcheck", this.getpoolRate());
      console.log(this.checkboxes1.length);
 
-     if(this.getpoolRate() == ''){
-      console.log("value should be minimum 1");
-      hasError1 = true;
-      return hasError1
-    }
+    //  if(this.getpoolRate() == ''){
+    //   console.log("value should be minimum 1");
+    //   hasError1 = true;
+    //   return hasError1
+    // }
 
-     if (this.checkboxes1.length == 0) {
-       console.log('Please provide atleast one checklist for update') ;
-      hasError = true;
-    return hasError;
-    }
+    //  if (this.checkboxes1.length == 0) {
+    //    console.log('Please provide atleast one checklist for update') ;
+    //   hasError = true;
+    // return hasError;
+    // }
          console.log(userForm);
 
-         if (!hasError && !hasError1) {
+        // if (!hasError && !hasError1) {
     let saveObject = {
 
       // checkListFieldsArrJson: JSON.stringify(this.selectedItems),
       updatedpool: this.getpoolHours(),
-      updatedpoolRate: this.getpoolRate(),
+      updatedpoolRate: this.fieldValue1,
       itemkey: this.assetId,
      checkListFieldsArrJson: this.checkboxes1
     };
@@ -79,7 +79,8 @@ this.checkboxes1=[]
 
      });
 
-  } }
+ // }
+ }
 
   getpoolHours() {
       if(this.selectedValue==="Daily"){
