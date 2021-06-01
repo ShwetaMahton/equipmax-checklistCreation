@@ -33,7 +33,7 @@ app.use(express.urlencoded({
 var con = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "",
+  password: "",  
   multipleStatements: true,
   database: "equipmax3",
   // to convert bit to boolean

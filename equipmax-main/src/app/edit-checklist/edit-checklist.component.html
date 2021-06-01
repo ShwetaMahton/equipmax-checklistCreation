@@ -38,7 +38,7 @@
   </div>
   <div *ngIf="selectedValue == 'others'">
     <label for="name">No. of days</label>
-    <input type="number" class="form-control" id="name" [(ngModel)]= "other_poolfrequency" name="other_poolfrequency" value="other_poolfrequency"
+    <input type="number" class="form-control" id="name" [(ngModel)]= "other_poolfrequency" name="other_poolfrequency" value="other_poolfrequency" (keyup)="onKey($event)"
       required>
   </div>
 
@@ -51,10 +51,10 @@
   </div>
 
   <div *ngFor="let tpp of checkboxes ;let i = index " >
-  <mat-checkbox  [checked]="tpp.selectedValue===1"  
-    (click)="toggleSelection($event, checkboxes[i],index)" (keyup)="onKey($event)">{{tpp.checklistField}}
+  <mat-checkbox  [checked]="tpp.selectedValue===1"  (change)="onKey1($event)"
+    (click)="toggleSelection($event, checkboxes[i],index)">{{tpp.checklistField}}
   </mat-checkbox>
 </div>
-  <br>
-  <button [disabled]= "click" mat-dialog-close type ="submit"  class="btn btn-primary"> Update </button>
+  <br> 
+  <button [disabled]= "click"  [disabled]="disabledCheck"  mat-dialog-close type ="submit"  class="btn btn-primary"> Update </button>
 </form>

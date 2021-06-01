@@ -27,6 +27,7 @@ export class EditChecklistComponent implements OnInit {
   selectedValuefinal: any[] = [];
   checkboxes2: any;
   click : boolean = false;
+  disabledCheck : boolean = false;
   
   constructor(private route: ActivatedRoute, private webservice: WebRequestService) { }
 
@@ -50,6 +51,8 @@ this.checkboxes1=[]
      console.log("newcheck", this.checkboxes1);
      console.log("newcheck", this.getpoolRate());
      console.log(this.checkboxes1.length);
+   let  length = this.checkboxes1.length;
+     console.log("length",length);
 
     //  if(this.getpoolRate() == ''){
     //   console.log("value should be minimum 1");
@@ -57,14 +60,14 @@ this.checkboxes1=[]
     //   return hasError1
     // }
 
-    //  if (this.checkboxes1.length == 0) {
-    //    console.log('Please provide atleast one checklist for update') ;
-    //   hasError = true;
-    // return hasError;
-    // }
+     if (this.checkboxes1.length == 0) {
+       console.log('Please provide atleast one checklist for update') ;
+      hasError = true;
+    return hasError;
+    }
          console.log(userForm);
 
-        // if (!hasError && !hasError1) {
+        if (!hasError) {
     let saveObject = {
 
       // checkListFieldsArrJson: JSON.stringify(this.selectedItems),
@@ -79,7 +82,7 @@ this.checkboxes1=[]
 
      });
 
- // }
+ }
  }
 
   getpoolHours() {
@@ -136,16 +139,18 @@ this.checkboxes1=[]
         obj.fieldValue1 = '';
       }
       const poolFreqDays=this.poolfrequency[0].poolfrequency / 24;
-      let listOption;
+      let listOption, listOption1;
       if(poolFreqDays===1){
         listOption="Daily";
       }else if(poolFreqDays===7){
         listOption="Weekly";
       }else if(poolFreqDays===30){
         listOption="Monthly";
-      }else{
+      }else {
         listOption="others";
-        this.other_poolfrequency = listOption;
+      //  this.other_poolfrequency = listOption;
+       listOption1=this.poolfrequency[0].poolfrequency / 24;
+       this.other_poolfrequency=listOption1;
       }
       this.selectedValue=listOption;
 
@@ -153,11 +158,11 @@ this.checkboxes1=[]
       this.fieldValue1 = poolFreqRate;
       console.log('this.fieldValue1', this.fieldValue1);
       console.log('poolfrequency', this.poolfrequency);
-      console.log('other_poolfrequency', this.other_poolfrequency);
+      console.log('other_poolfrequency', this.selectedValue);
     });
 
   }
-  toggleSelection(event: any, checkboxes1) {
+  toggleSelection(event, checkboxes1) {
     console.log(checkboxes1);
     checkboxes1.selectedValue == 0 ? checkboxes1.selectedValue=1 : checkboxes1.selectedValue=0;
     console.log("checkboxes1",checkboxes1);
@@ -168,6 +173,10 @@ this.checkboxes1=[]
   onKey(event: KeyboardEvent) { 
     // if value is not empty the set click to false otherwise true
     this.click = (event.target as HTMLInputElement).value === '' ? true:false;
+  }
+
+  onKey1(event) { 
+    this.disabledCheck = !event.target.checked;
   }
  
   
