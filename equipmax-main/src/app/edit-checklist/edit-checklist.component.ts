@@ -27,7 +27,6 @@ export class EditChecklistComponent implements OnInit {
   selectedValuefinal: any[] = [];
   checkboxes2: any;
   click : boolean = false;
-  disabledCheck : boolean = false;
   
   constructor(private route: ActivatedRoute, private webservice: WebRequestService) { }
 
@@ -175,11 +174,11 @@ this.checkboxes1=[]
     this.click = (event.target as HTMLInputElement).value === '' ? true:false;
   }
 
-  onKey1(event) { 
-    this.disabledCheck = !event.target.checked;
+
+  get someChecked()
+  {
+    return this.checkboxes?this.checkboxes.some(x=>x.selectedValue):false
   }
- 
-  
 
 }
 
