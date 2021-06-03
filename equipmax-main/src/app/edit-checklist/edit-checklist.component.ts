@@ -12,7 +12,7 @@ import { keyframes } from '@angular/animations';
 })
 export class EditChecklistComponent implements OnInit {
   selectedValue: any;
-  other_poolfrequency: any;
+  other_poolfrequency: number;
   select: any;
   assetId: number;
   checkboxes: any[] = [];
