@@ -1,0 +1,61 @@
+<p>virtual-scroll works!</p>
+
+<div class="search-results"
+      infinite-scroll
+      [infiniteScrollDistance]="scrollDistance"
+      [infiniteScrollThrottle]="throttle"
+      (scrolled)="onScrollDown()">
+  
+<mat-card  *ngFor = "let item2 of itemDetails" >
+   <mat-card-title>
+      <h1>
+         {{item2.poolAssetID}}
+      </h1>
+   </mat-card-title>
+</mat-card>
+
+<!-- <h2>Virtual Scrolling</h2>
+
+   <li *ngFor = "let item1 of itemDetails" >
+              
+               {{item1.poolAssetID}}
+         </li> -->
+     
+   
+ </div>
+
+ <h3>Virtual Scrolling</h3>
+<cdk-virtual-scroll-viewport [itemSize] = "20" >
+   <table >
+      <thead> 
+         <tr>
+           <th> <div> Item </div></th>
+           <th><div> AssetsID </div></th>
+           <th><div> AssetsID </div></th>
+           <th><div> AssetsID </div></th>
+           <th><div> AssetsID </div></th>
+           <th><div> AssetsID </div></th>
+           <th><div> AssetsID </div></th>
+            </tr>
+      </thead>
+      <tbody>
+         <tr *cdkVirtualFor = "let item of itemDetails" >
+              <td> {{item.poolItemKeyPK}} </td>
+              <td> {{item.poolAssetID}} </td>
+              <td> {{item.poolAssetID}} </td>
+              <td> {{item.poolAssetID}} </td>
+              <td> {{item.poolAssetID}} </td>
+              <td> {{item.poolAssetID}} </td>
+              <td> {{item.poolAssetID}} </td>
+         </tr>
+      </tbody>
+   </table>
+   <div *ngIf="isLoading" 
+   style="display: flex; justify-content: center; align-items: center; background: white;">
+  <mat-progress-spinner 
+    color="primary" 
+    mode="indeterminate">
+  </mat-progress-spinner>
+</div>
+</cdk-virtual-scroll-viewport>
+ 

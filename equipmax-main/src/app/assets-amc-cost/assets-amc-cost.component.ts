@@ -8,6 +8,8 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {PageEvent} from '@angular/material/paginator';
 import { endWith } from 'rxjs/operators';
 import { applySourceSpanToExpressionIfNeeded } from '@angular/compiler/src/output/output_ast';
+import { MatDialog } from '@angular/material/dialog';
+import { BarChartLineChartComponent } from '../bar-chart-line-chart/bar-chart-line-chart.component';
 
 // import {Label } from 'ng2-charts';  
 
@@ -32,20 +34,41 @@ lengths=0;
   pageSize = 5;  
   finalLabel :any;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  
   // MatPaginator Output
   pageEvent: PageEvent;
   pageEvents: PageEvent;
 
   pageItems = 10;
+  assetId: any;
 
-  constructor(private router: Router,private webservice: WebRequestService,private elementRef: ElementRef) {
+  constructor(private router: Router,private webservice: WebRequestService,private elementRef: ElementRef
+    ,public dialog: MatDialog) {
     
    }
 
+   click(index : number) {
+  //  console.log("hello shweta")
+  //  this.webservice.getIDForOnclickChart().subscribe((data:any ) =>{
+  //   console.log("////",data)
+   //this.assetId.data=data.req_log;
+
+   console.log("index", index);
+    this.webservice.poolAssetID=index;
+    const dialogRef = this.dialog.open(BarChartLineChartComponent ,{height:'80%',width:'70%'});
+    //this._router.navigate(['/dialog-table',index]);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+      
+    
+})
+   }
+  
+
   ngOnInit(): void {
 
-    this.webservice.getassetamc().subscribe(value =>{    
+    
+ this.webservice.getassetamc().subscribe(value =>{    
       this.items=value;  
       this.lengths=value.length;
       console.log("data",value);
@@ -64,6 +87,10 @@ lengths=0;
   }
  //First Chart
 let htmlRef = this.elementRef.nativeElement.querySelector(`#chartContainer`);
+
+
+
+
 if(this.lineChart != undefined) {
   while (this.lineChart.data.datasets.length > 0) {
     this.lineChart.data.datasets.pop();
@@ -94,6 +121,15 @@ this.lineChart = new Chart(htmlRef, {
     labels: labelValue,
   },
   options: {
+    onClick: function(event) {
+      console.log(event);
+     
+      //var activePoints = this.lineChart.data.datasets(event);
+      // var x_value = this.data.datasets[0](event).data;
+      // var y_value = this.data.datasets[0].data(event);
+      // console.log(x_value);
+      // console.log(activePoints,"activePoints");
+  },
     title: {
       fullWidth: true,
       fontSize:15,
@@ -133,9 +169,13 @@ this.lineChart = new Chart(htmlRef, {
               }
           }
       ]},
+     
     maintainAspectRatio: false,
   },
+  
 });
+
+
 }) 
 
 //Second Chart
@@ -234,6 +274,7 @@ this.lineCharts = new Chart(htmlRefs, {
               }
           }
       ]},
+     
     maintainAspectRatio: false,
   },
 });
@@ -488,6 +529,7 @@ chart_cost(itemCost,amcCost,labelValue) {
                   }
               }
           ]},
+         
         maintainAspectRatio: false,
       },
     });
@@ -617,3 +659,11 @@ if(this.lineCharts != undefined) {
   });
 }
 }
+// function changeline(e: MouseEvent) {
+//   console.log("this is click event"  , this.lineChart.config.type)
+//   // const updatetype = 'line';
+//   //       this.lineChart.config.type = updatetype;
+//   //      this.lineChart.update();
+//  // throw new Error('Function not implemented.');
+// }
+

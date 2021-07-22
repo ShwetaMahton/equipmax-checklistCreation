@@ -27,7 +27,18 @@ import { AssetsAmcCostComponent } from './assets-amc-cost/assets-amc-cost.compon
 import { ChartsModule } from 'ng2-charts';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { EditChecklistComponent } from './edit-checklist/edit-checklist.component';
+import { VirtualScrollComponent } from './virtual-scroll/virtual-scroll.component';
+import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { BarChartLineChartComponent } from './bar-chart-line-chart/bar-chart-line-chart.component';
+import { LoginModuleComponent } from './login-module/login-module.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+//import { PdfParseModule } from 'pdf-parse';
+import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
 
  @NgModule({
   declarations: [
@@ -43,7 +54,10 @@ import { EditChecklistComponent } from './edit-checklist/edit-checklist.componen
     DialogAssetLogComponent,
     UpdateChecklistComponent,
     AssetsAmcCostComponent,
-    EditChecklistComponent
+    EditChecklistComponent,
+    VirtualScrollComponent,
+    BarChartLineChartComponent,
+    LoginModuleComponent
    
   ],
   entryComponents: [DialogExampleComponent],
@@ -62,9 +76,18 @@ import { EditChecklistComponent } from './edit-checklist/edit-checklist.componen
     ChartsModule,
     NgxPaginationModule,
     ScrollingModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatProgressSpinnerModule,
+    InfiniteScrollModule,
+    PdfViewerModule,
+    PdfJsViewerModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+
+ }

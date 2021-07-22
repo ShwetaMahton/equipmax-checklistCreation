@@ -19,6 +19,11 @@ export class WebRequestService {
   public poolAssetID:number;
   public checklistLogPK:number;
   public checklistPK:number;
+
+  getPDF():string {
+    return '/assets/demo.pdf';
+  }
+  
   getchecklist() {
       return this.http.get(environment.url+'/checklist')
   }
@@ -30,6 +35,17 @@ export class WebRequestService {
     console.log(this.poolAssetID);
     localStorage.setItem('id', JSON.stringify(this.poolAssetID));
   }
+
+  
+    getIDForOnclickChart()  {
+      console.log(this.poolAssetID);
+      var poolAssetID= this.poolAssetID;
+     return this.http.post('http://localhost:3000/getchartId', {poolAssetID});
+  
+    }
+    IDForOnclick()  {
+      return this.http.get(environment.url + '/getgetChartID')
+    }
 
 
   getupdatechecklist(){
@@ -50,6 +66,10 @@ export class WebRequestService {
 
   getassetid()  {
     return this.http.get(environment.url + '/assetid')
+  }
+
+  getForVirtualScrolling(page: number)  {
+    return this.http.get(environment.url + '/VirtualScroll')
   }
   
   getassetamc()  {

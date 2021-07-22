@@ -7,6 +7,8 @@ import { AssetTableIndexComponent } from './asset-table-index/asset-table-index.
 import { DialogAssetTableComponent } from './dialog-asset-table/dialog-asset-table.component';
 import { ChecklistLogTableComponent } from './checklist-log-table/checklist-log-table.component';
 import {AssetsAmcCostComponent} from './assets-amc-cost/assets-amc-cost.component';
+import {VirtualScrollComponent} from './virtual-scroll/virtual-scroll.component';
+import { LoginModuleComponent } from './login-module/login-module.component';
 
 const routes: Routes = [
   {path: 'createchecklist', component:CreatechecklistComponent },
@@ -15,7 +17,9 @@ const routes: Routes = [
   {path: 'checklistpool', component: ChecklistpoolComponent},
   {path: 'dialog-table/:id', component: DialogAssetTableComponent},
   {path: 'checklist', component: ChecklistLogTableComponent},
-  {path: 'assets-amc-cost', component:AssetsAmcCostComponent}
+  {path: 'assets-amc-cost', component:AssetsAmcCostComponent},
+  {path: 'virtual-scroll', component:VirtualScrollComponent},
+  {path:'login-module', component:LoginModuleComponent}
 ];
 
 @NgModule({
@@ -23,4 +27,5 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
-export const routingcomponents = [CreatechecklistComponent, AssetTableComponent, ChecklistpoolComponent, AssetTableIndexComponent,AssetsAmcCostComponent]
+export const routingcomponents = [CreatechecklistComponent, AssetTableComponent, ChecklistpoolComponent, 
+  AssetTableIndexComponent,AssetsAmcCostComponent, VirtualScrollComponent,LoginModuleComponent]

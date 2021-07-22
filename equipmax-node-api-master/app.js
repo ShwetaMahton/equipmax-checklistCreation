@@ -1,15 +1,67 @@
+// var http = require('http');
+
+// // When you have your own Client ID and secret, put down their values here:
+// var clientId = "FREE_TRIAL_ACCOUNT";
+// var clientSecret = "PUBLIC_SECRET";
+
+// // TODO: Specify the URL of your small PDF document (less than 1MB and 10 pages)
+// // To extract text from bigger PDf document, you need to use the async method.
+// var url = "https://www.harvesthousepublishers.com/data/files/excerpts/9780736948487_exc.pdf";
+
+// var options = {
+//     hostname: "api.whatsmate.net",
+//     port: 80,
+//     path: '/v1/pdf/extract?url=' + url,
+//     method: "GET",
+//     headers: {
+//         "X-WM-CLIENT-ID": clientId,
+//         "X-WM-CLIENT-SECRET": clientSecret,
+//     }
+// };
+
+// var request = new http.ClientRequest(options);
+// request.end();
+
+// request.on('response', function (response) {
+//     console.log('Status code: ' + response.statusCode);
+//     response.setEncoding('utf8');
+//     response.on('data', function (chunk) {
+//         console.log('Extracted text:');
+//         console.log(chunk);
+//     });
+// });
+
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mysql= require("mysql");
+const webpush = require('web-push');
+console.log(webpush.generateVAPIDKeys());
+
+const publicKey = 'BGHeY4yv3OpUiU0CnFZ-wOgANU6nN1RD22xOB-0n5ClZe66o9v5naGRcOZOKYUqE9mObTqBRA8e_-er3OG8mRPA';
+const privateKey = 'EcExXdKJRN7Te0NyW3zXhc4eE-biue_s9cYtITmBQ_o';
 
 bcrypt = require('bcryptjs'),
 multer = require('multer'),
 moment = require('moment'),
 
-fs= require('fs');
+ fs= require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
+
+
+const pdfparse = require('pdf-parse');
+const pdffile = fs.readFileSync('Resume Shweta Mahton updated-converted.pdf')
+
+//get the information
+pdfparse(pdffile).then(function(data){
+  console.log(data.numpages);
+  console.log(data.info);
+  console.log(data.text);
+})
+
+
 var http = require('http');
 
 var corsOptions = {
@@ -116,6 +168,45 @@ app.get("/equipmax", (req,res)=>{
       res.send(JSON.stringify(result))
     });
   }) 
+
+  //API for Virtual-Scroll
+
+  app.get('/VirtualScroll', (req,res) =>{
+    con.query('SELECT poolItemKeyPK,poolAssetID FROM dataitempool ',function(err,result){
+      if(err) throw err;
+      res.send(JSON.stringify(result))
+    });
+  }) 
+
+
+  app.get('/getgetChartID', (req,res) =>{
+    con.query('SELECT poolAssetID FROM dataitempool ',function(err,result){
+      if(err) throw err;
+      res.send(JSON.stringify(result))
+    });
+  }) 
+
+  //Chart-Onclick
+
+  app.post("/getchartId",(req,res) =>{
+    poolAssetID = req.body.assetId;
+  console.log("poolid",poolAssetID);
+   sql1 = `select poolAssetID from dataitempool where poolAssetID='${poolAssetID}'`
+  con.query(sql1, (err, result) => {
+   if (err) {
+     console.log(err);
+   }
+   else {
+     console.log(result);
+     res.send(
+       JSON.stringify({
+         result: "passed",
+         req_log: result
+       })
+     );
+   }
+ })
+ })
 
   //amc chart api
 

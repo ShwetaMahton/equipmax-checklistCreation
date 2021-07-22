@@ -17,6 +17,9 @@
     "moment": "^2.29.1",
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
-    "sequelize": "^6.3.5"
+    "pdf-parse": "^1.1.1",
+    "pdf-text-extract": "^1.5.0",
+    "sequelize": "^6.3.5",
+    "web-push": "^3.4.5"
   }
 }
