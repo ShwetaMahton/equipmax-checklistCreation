@@ -52,7 +52,7 @@ const jwt = require('jsonwebtoken');
 
 
 const pdfparse = require('pdf-parse');
-const pdffile = fs.readFileSync('Resume Shweta Mahton updated-converted.pdf')
+const pdffile = fs.readFileSync('demo.pdf')
 
 //get the information
 pdfparse(pdffile).then(function(data){
